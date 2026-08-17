@@ -1,0 +1,67 @@
+name: Task — Standard
+description: Normal feature work.
+labels: [standard]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Run the `discover` skill before filling this in. You cannot answer the triage
+        section without reading `docs/ssot/`.
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: What this is for, and who needs it.
+    validations: { required: true }
+  - type: input
+    id: invariants
+    attributes:
+      label: Invariants touched
+      description: Rule IDs from docs/ssot/, comma separated. Write "none" only if no domain rule applies.
+      placeholder: AV-1, AV-2
+    validations: { required: true }
+  - type: input
+    id: adrs
+    attributes:
+      label: ADRs that constrain this
+      placeholder: ADR-0007, or none
+    validations: { required: true }
+  - type: dropdown
+    id: contracts
+    attributes:
+      label: Contract impact
+      options: [none, additive, breaking]
+    validations: { required: true }
+  - type: textarea
+    id: flow
+    attributes:
+      label: Expected flow
+      description: Link the TRACE.md section this implements, if one exists.
+    validations: { required: true }
+  - type: textarea
+    id: scenarios
+    attributes:
+      label: Scenarios
+      description: Given, when, then. Cover the unhappy paths — failure, cancel, retry, bad input.
+    validations: { required: true }
+  - type: textarea
+    id: edges
+    attributes:
+      label: Edge cases
+    validations: { required: true }
+  - type: textarea
+    id: out
+    attributes:
+      label: Out of scope
+      description: What a reader would wrongly assume is included.
+    validations: { required: true }
+  - type: textarea
+    id: done
+    attributes:
+      label: Done checklist
+      value: |
+        - [ ] Named invariant tests green
+        - [ ] Contract tests green
+        - [ ] `mise run check` green
+        - [ ] Harvest run: SSOT and ADRs updated, spec frozen
+    validations: { required: true }

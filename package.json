@@ -1,0 +1,17 @@
+{
+  "name": "ai-engg-standard-2026",
+  "version": "0.1.0",
+  "description": "Process, documents, and enforcement for projects where AI writes the code.",
+  "type": "module",
+  "private": true,
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "check": "mise run check",
+    "check:docs": "node tooling/checks/run-all.mjs",
+    "codemap": "node tooling/checks/codemap-gen.mjs",
+    "prepare": "lefthook install"
+  }
+}

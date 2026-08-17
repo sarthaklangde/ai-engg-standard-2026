@@ -1,0 +1,55 @@
+name: Task — High-risk
+description: Auth, payments, migrations, core business records, external integrations, or any change to an invariant.
+labels: [high-risk]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        High-risk work needs a human decision before implementation starts.
+        If this changes an existing invariant, the SSOT changes first, in its own
+        commit, with an ADR. Code follows after.
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+    validations: { required: true }
+  - type: input
+    id: invariants
+    attributes:
+      label: Invariants touched
+      placeholder: AV-1, AV-4
+    validations: { required: true }
+  - type: dropdown
+    id: invariant-change
+    attributes:
+      label: Does this weaken or change an existing invariant?
+      options: ['no', 'yes — ADR required, SSOT changes first']
+    validations: { required: true }
+  - type: input
+    id: adrs
+    attributes:
+      label: ADRs that constrain this, or the ADR this work will add
+    validations: { required: true }
+  - type: textarea
+    id: scenarios
+    attributes:
+      label: Scenarios
+      description: Given, when, then. Include the adversarial cases — auth bypass, data isolation, stale state.
+    validations: { required: true }
+  - type: textarea
+    id: failure
+    attributes:
+      label: What can go wrong
+      description: Failure modes, blast radius, and what a partial failure leaves behind.
+    validations: { required: true }
+  - type: textarea
+    id: rollout
+    attributes:
+      label: Rollout and rollback
+      description: How this ships, and exactly how to undo it. A migration states its rollback.
+    validations: { required: true }
+  - type: textarea
+    id: out
+    attributes:
+      label: Out of scope
+    validations: { required: true }

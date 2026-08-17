@@ -1,0 +1,21 @@
+node_modules/
+dist/
+build/
+coverage/
+.turbo/
+*.tsbuildinfo
+
+.env
+.env.*
+!.env.example
+
+.DS_Store
+*.log
+
+# Probes are throwaway by rule. See docs/process/PROCESS.md, stage PROBE.
+probe-*
+probe/
+
+# Generated from packages/contracts. Never commit, never hand-edit.
+**/models_generated.py
+**/openapi.generated.json

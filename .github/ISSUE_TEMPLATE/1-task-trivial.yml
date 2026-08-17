@@ -1,0 +1,28 @@
+name: Task — Trivial
+description: A small fix, a dependency bump, or a config tweak.
+labels: [trivial]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What is wrong today.
+    validations: { required: true }
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected result
+    validations: { required: true }
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence plan
+      description: How you will show it worked.
+    validations: { required: true }
+  - type: checkboxes
+    id: gate
+    attributes:
+      label: Triage
+      options:
+        - label: This touches no domain invariant and contradicts no ADR. If it does, use the Standard or High-risk form.
+          required: true

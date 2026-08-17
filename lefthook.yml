@@ -1,0 +1,41 @@
+# Git hooks.
+#
+# lefthook, not husky: a single Go binary, parallel by default, and it does not
+# need Node to lint a Python package.
+#
+# THE RULE THAT MATTERS: pre-commit stays under 5 seconds.
+#
+# A slow pre-commit does not improve quality. It teaches everyone — humans and
+# agents alike — to reach for `--no-verify`, and then nothing is enforced at all.
+# Hooks are fast feedback. CI is the authority.
+
+pre-commit:
+  parallel: true
+  commands:
+    format:
+      glob: '*.{ts,tsx,js,jsx,mjs,json,md,yml,yaml,css}'
+      run: pnpm exec prettier --write {staged_files}
+      stage_fixed: true
+    lint:
+      glob: '*.{ts,tsx,js,jsx,mjs}'
+      run: pnpm exec eslint --fix --no-warn-ignored {staged_files}
+      stage_fixed: true
+    python-format:
+      glob: '*.py'
+      run: ruff format {staged_files} && ruff check --fix {staged_files}
+      stage_fixed: true
+
+pre-push:
+  parallel: true
+  commands:
+    docs-gates:
+      run: node tooling/checks/run-all.mjs
+    typecheck:
+      run: mise run typecheck
+    invariants:
+      run: mise run test:invariants
+
+# Everything runs again in CI. These hooks only shorten the feedback loop.
+#
+# `--no-verify` is banned by AGENTS.md and by ENGINEERING_STANDARDS.md. If a hook
+# blocks you, fix the cause. If the hook itself is wrong, fix the hook in its own PR.

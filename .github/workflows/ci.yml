@@ -1,0 +1,82 @@
+name: CI
+
+# CI is the authority. Git hooks are feedback; they can be bypassed and
+# eventually will be. Everything that must hold runs here.
+
+on:
+  pull_request:
+  push:
+    branches: [main, dev]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: jdx/mise-action@v2
+      - run: pnpm install --frozen-lockfile
+      - name: Documentation gates
+        run: node tooling/checks/run-all.mjs
+      - run: mise run lint
+      - run: mise run typecheck
+      - run: mise run test
+
+  invariant-guard:
+    name: invariant-guard
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # An agent that can edit the test judging its work will edit that test.
+      # Invariant and contract tests are written before the ticket, from the
+      # SSOT, and the implementer may not touch them. Weakening one is a
+      # deliberate act that needs a human and an ADR — which is what the
+      # `invariant-change` label represents.
+      - name: Block silent invariant edits
+        if: ${{ !contains(github.event.pull_request.labels.*.name, 'invariant-change') }}
+        run: |
+          set -euo pipefail
+          base="origin/${{ github.base_ref }}"
+          changed="$(git diff --name-only "$base"...HEAD)"
+
+          invariants="$(echo "$changed" | grep -E '^tests/invariants/' || true)"
+          code="$(echo "$changed" | grep -E '^(apps|packages)/.*\.(ts|tsx|js|jsx|py)$' || true)"
+
+          if [ -n "$invariants" ] && [ -n "$code" ]; then
+            echo "::error::This PR changes invariant tests and application code together."
+            echo ""
+            echo "Invariant tests are written before the ticket, from the SSOT."
+            echo "Changing one alongside an implementation is how a failing rule"
+            echo "gets edited until it passes."
+            echo ""
+            echo "If the domain rule genuinely changed: write an ADR, update the"
+            echo "SSOT, and add the 'invariant-change' label."
+            echo ""
+            echo "Invariant files touched:"
+            echo "$invariants"
+            exit 1
+          fi
+
+      # A behavior change inside a domain must move its SSOT in the same PR.
+      # A stale SSOT is worse than no SSOT: it is confidently wrong, and the
+      # next agent believes it.
+      - name: Require an SSOT update with a domain behavior change
+        run: |
+          set -euo pipefail
+          base="origin/${{ github.base_ref }}"
+          changed="$(git diff --name-only "$base"...HEAD)"
+
+          if echo "$changed" | grep -qE '^docs/ssot/.*\.md$'; then exit 0; fi
+          if echo "$changed" | grep -qE '^tests/invariants/'; then
+            echo "::error::Invariant tests changed but no SSOT was updated."
+            echo "The rules and their prose index must move together."
+            exit 1
+          fi

@@ -1,0 +1,50 @@
+# mise pins the runtimes and owns the task list.
+#
+# One canonical command runs everything: `mise run check`.
+# Humans, agents, git hooks, and CI all use the same command. If they diverge,
+# "it passes locally" starts meaning nothing.
+
+[tools]
+node = "22"
+pnpm = "10"
+# python = "3.12"   # uncomment when a project adds a Python service
+
+[tasks.check]
+description = "Everything. The one command humans, agents, hooks and CI all run."
+depends = ["check:docs", "lint", "typecheck", "test"]
+
+[tasks."check:docs"]
+description = "The documentation gates. These fail the build."
+run = "node tooling/checks/run-all.mjs"
+
+[tasks.codemap]
+description = "Regenerate CODEMAP.md from the workspace manifests."
+run = "node tooling/checks/codemap-gen.mjs"
+
+[tasks.lint]
+description = "Lint changed packages."
+run = "pnpm -r --if-present lint"
+
+[tasks.format]
+description = "Format the working tree."
+run = "pnpm -r --if-present format"
+
+[tasks.typecheck]
+description = "Typecheck every workspace package."
+run = "pnpm -r --if-present typecheck"
+
+[tasks.test]
+description = "Unit and integration tests."
+run = "pnpm -r --if-present test"
+
+[tasks."test:invariants"]
+description = "Domain invariants only. These are append-only and never weakened."
+run = "pnpm vitest run tests/invariants"
+
+[tasks."test:e2e"]
+description = "End-to-end suite. Needs a running environment."
+run = "pnpm -r --if-present test:e2e"
+
+[tasks.contracts]
+description = "Regenerate everything derived from packages/contracts."
+run = "pnpm --filter '@repo/contracts' --if-present generate"
