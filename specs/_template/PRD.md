@@ -44,4 +44,4 @@ What could make this the wrong thing to build. What you are unsure about. What y
 
 | Area | New or existing | Invariants affected |
 |---|---|---|
-| `AVAILABILITY` | existing | AV-1, AV-2 |
+| `CAPACITY` | existing | CAP-1, CAP-2 |

@@ -23,10 +23,11 @@ Two sentences follow from this table, and they decide most arguments.
 > **Never write down what an agent can discover in 30 seconds.**
 > **Always write down what it cannot discover at all.**
 
-An agent reading the booking code sees that a lock exists. It never sees why the lock sits at
-room-type granularity, or that you allow a one-room overbook on one property on purpose, or
-that Airbnb stays authoritative until December. Structure is cheap to rediscover and corrects
-itself. Intent is impossible to rediscover and catastrophic to guess.
+An agent reading a checkout flow sees *that* a lock exists. It never sees why the lock is held
+for the whole request instead of released early, or that a hold lasts 10 minutes because the
+payment provider's session does, or that one sales channel is entered by hand on purpose.
+Structure is cheap to rediscover and corrects itself. Intent is impossible to rediscover and
+catastrophic to guess.
 
 **Generate structure. Document intent. Discover implementation.**
 
@@ -68,7 +69,7 @@ Each folder has a `README.md` repeating its rule. This is the summary.
 
 - One file per domain area. Name it `UPPER_SNAKE_CASE.md`.
 - Present tense. No history. No "in v2 we added".
-- Every rule gets an ID: `AV-1`, `BK-3`. Declare the prefix in the frontmatter.
+- Every rule gets an ID: `CAP-1`, `ORD-3`. Declare the prefix in the frontmatter.
 - Every rule that can be a test **must** have one. CI enforces the link.
 - Changing a rule needs a human and an ADR in the same PR.
 - **It shrinks over time.** As rules become tests, the prose thins. A shrinking document is a
@@ -98,7 +99,7 @@ Each folder has a `README.md` repeating its rule. This is the summary.
 
 ### `tests/invariants/` — permanent, append-only
 
-- One file per SSOT rule. Marked `// @invariant AV-1`.
+- One file per SSOT rule. Marked `// @invariant CAP-1`.
 - Add freely. Strengthen freely. Weakening or deleting needs a human and an ADR.
 - Implementers may not edit this directory. CI blocks it.
 - Every production bug becomes a new invariant here, not a unit test.

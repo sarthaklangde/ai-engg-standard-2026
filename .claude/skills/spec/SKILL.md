@@ -44,7 +44,7 @@ real values.
 
 - Concrete values only. Write `bk_9k2`, never `<id>`. Placeholders hide decisions.
 - Real dates, real amounts, real names. `2026-09-01`, `1200000`, `Lan Nguyen`.
-- Show the observable effect after each mutation. If availability drops, show it dropping.
+- Show the observable effect after each mutation. If a count drops, show it dropping.
 - **Always trace the reversal path.** Cancel, refund, expire. Most bugs live there.
 - One trace per major flow. Six is normal for a new product.
 

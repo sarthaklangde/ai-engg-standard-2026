@@ -2,7 +2,7 @@
 
 **Death rule: permanent. Updated in the same PR as the integration changes.**
 
-One file per external provider. `RESEND.md`, `STRIPE.md`, `AIRBNB.md`.
+One file per external provider. `STRIPE.md`, `SENDGRID.md`, `TWILIO.md`.
 
 These documents survive because they hold what the vendor's documentation does not: what the
 provider actually does when things go wrong, and what you decided to do about it.

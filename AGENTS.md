@@ -9,7 +9,8 @@ Do these four steps before you propose any change.
 1. Read `CODEMAP.md`. It lists every app and package. It is generated. Never edit it by hand.
 2. Read every file in `docs/ssot/`. The tree is small on purpose. Read all of it, every session.
 3. Grep `docs/adr/README.md` for your topic. Open the ADRs that match.
-4. Read `docs/process/PROCESS.md` if you do not know this workflow.
+4. Read `docs/process/ONEPAGER.md` if you do not know this workflow. It is the whole method in
+   one file.
 
 Do not start work from the code alone. The code states what happens. It does not state why.
 
@@ -22,7 +23,7 @@ Do not start work from the code alone. The code states what happens. It does not
 | Why is it built this way? | `docs/adr/` |
 | What shape does this API take? | `packages/contracts/` — Zod schemas |
 | Where does the code live? | `CODEMAP.md` |
-| How do we work here? | `docs/process/PROCESS.md` |
+| How do we work here? | `docs/process/ONEPAGER.md`, then `PROCESS.md` for detail |
 | What are the code rules? | `docs/engineering-standards/ENGINEERING_STANDARDS.md` |
 | How do branches and PRs work? | `docs/engineering-standards/CONTRIBUTION_POLICY.md` |
 

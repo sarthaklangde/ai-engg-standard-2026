@@ -23,7 +23,7 @@ specs/<feature>/
    stage. Nobody reads it again. That is success.
 4. **Tickets need resolvable frontmatter.** `tooling/checks/ticket-frontmatter.mjs` verifies
    every invariant ID and ADR number exists.
-5. Name the folder after the feature, in kebab case. `booking-v1`, `pricing-calendar`.
+5. Name the folder after the feature, in kebab case. `ticketing-v1`, `refunds`.
 
 ## Why these are not maintained
 

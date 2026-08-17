@@ -40,7 +40,7 @@ You cannot answer this without step 2. That is why step 2 exists.
 
 State these four things before writing code.
 
-1. **Rules that constrain this work** — the rule IDs, `AV-1`, `BK-3`.
+1. **Rules that constrain this work** — the rule IDs, `CAP-1`, `ORD-3`.
 2. **Decisions that constrain this work** — the ADR numbers, and what each forbids.
 3. **Where the code lives** — the files, from the code map plus a grep.
 4. **What is not written down** — anything you had to infer. Say so plainly. If it matters, it

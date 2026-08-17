@@ -10,7 +10,7 @@ These are the domain rules in `docs/ssot/`, expressed as running tests. The pros
 1. **One marker per rule.** Every file states which rule it proves.
 
    ```ts
-   // @invariant AV-1
+   // @invariant CAP-1
    ```
 
    `tooling/checks/ssot-invariant-sync.mjs` fails the build if an SSOT rule has no test, or a
@@ -45,11 +45,11 @@ These are the domain rules in `docs/ssot/`, expressed as running tests. The pros
 
 ```
 tests/invariants/
-├── availability/
-│   ├── AV-1.test.ts
-│   └── AV-2.test.ts
-└── booking/
-    └── BK-1.test.ts
+├── capacity/
+│   ├── CAP-1.test.ts
+│   └── CAP-2.test.ts
+└── ordering/
+    └── ORD-1.test.ts
 ```
 
 Prefer property tests over examples. A rule stated as "for any sequence of operations, X holds"

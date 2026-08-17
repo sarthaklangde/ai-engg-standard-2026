@@ -30,9 +30,10 @@ Show the human the exact diffs. These two documents are where their judgment is 
 agent drafts, a human approves.
 
 ```
-docs/ssot/AVAILABILITY.md   + AV-8 — a manager block cancels overlapping holds
-docs/adr/0016-holds-are-rows.md   new — holds are rows, not a cache TTL,
-                                  because the manager calendar must display them
+docs/ssot/CAPACITY.md   + CAP-7 — cancelling an event releases every active hold
+docs/adr/0016-hold-sweeper.md   new — the sweeper runs every 30 seconds, not on
+                                read, because the dashboard must not depend on
+                                traffic to stay correct
 ```
 
 Write the SSOT edit in the house style: present tense, no history, numbered, about 20 words per

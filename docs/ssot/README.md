@@ -13,8 +13,8 @@ When the code and the SSOT disagree, one of them is a bug. Resolve it. Never tol
    v2 we added". The moment a document takes a changelog voice it grows forever and stops being
    read. History is git and `specs/`.
 3. **Every rule carries an ID.** Declare the prefix in the frontmatter. Number the rules
-   `AV-1`, `AV-2`, and so on. Never reuse an ID, even after a rule is removed.
-4. **Every rule that can be a test must have one.** Mark the test `// @invariant AV-1`.
+   `CAP-1`, `CAP-2`, and so on. Never reuse an ID, even after a rule is removed.
+4. **Every rule that can be a test must have one.** Mark the test `// @invariant CAP-1`.
    `tooling/checks/ssot-invariant-sync.mjs` fails the build if a rule has no test, or a test
    cites a rule that does not exist.
 5. **Keep it short.** Target 60 lines. Six domains at 60 lines each means an agent reads the
@@ -31,9 +31,9 @@ When the code and the SSOT disagree, one of them is a bug. Resolve it. Never tol
 
 ```yaml
 ---
-domain: Availability     # human name of the area
-prefix: AV               # rule ID prefix, unique across all SSOTs
-status: active           # active | draft
+domain: Capacity       # human name of the area
+prefix: CAP            # rule ID prefix, unique across all SSOTs
+status: active         # active | draft
 ---
 ```
 
@@ -42,8 +42,8 @@ status: active           # active | draft
 The check script matches this exact shape. Keep it.
 
 ```markdown
-- **AV-1** — Availability is never negative. The system refuses a booking that would make it
-  negative.
+- **CAP-1** — Available capacity is never negative. The system refuses an order that would make
+  it negative.
 ```
 
 ## What goes here, and what does not

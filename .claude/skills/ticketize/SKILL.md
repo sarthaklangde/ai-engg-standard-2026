@@ -24,11 +24,13 @@ three land, nothing is testable in between, and integration errors surface at th
 
 Right: each ticket makes one thing work end to end, however thin.
 
-1. A guest sees availability for one room type
-2. A guest holds nights, and the hold expires
-3. A guest confirms a booking, and availability drops
-4. A manager sees the booking
-5. A manager cancels, and availability returns
+Example, for a system that sells a limited number of things:
+
+1. A buyer sees how many remain
+2. A buyer holds some, and the hold expires on its own
+3. A buyer confirms, and the remaining count drops
+4. Staff see the confirmed order
+5. Staff cancel it, and the count returns
 
 Every ticket ends with something demonstrable and a green test.
 
@@ -36,7 +38,7 @@ Every ticket ends with something demonstrable and a green test.
 
 ```yaml
 ---
-invariants: [AV-1, AV-2]
+invariants: [CAP-1, CAP-2]
 adrs: [ADR-0007]
 contracts: none        # none | additive | breaking
 ---

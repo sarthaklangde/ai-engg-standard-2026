@@ -6,17 +6,16 @@ Zod schemas. That is all a contract is. This package is the one hand-written sou
 every shape that crosses a boundary.
 
 ```ts
-export const LocalDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/)
-export const Vnd = z.number().int().nonnegative()
+export const Cents = z.number().int().nonnegative()
 
-export const CreateBookingRequest = z.object({
-  idempotencyKey: z.uuid(),
-  checkIn: LocalDate,
-  checkOut: LocalDate,          // exclusive — see SSOT AVAILABILITY, Model
-  quotedTotalVnd: Vnd,          // server rejects on drift — see ADR-0014
-}).refine(v => v.checkOut > v.checkIn, 'checkOut must be after checkIn')
+export const CreateOrderRequest = z.object({
+  idempotencyKey: z.uuid(),   // buyers double-submit; see ADR-0009
+  holdId: z.string(),
+  quantity: z.number().int().min(1),
+  quotedTotalCents: Cents,    // server rejects if the price moved; see ADR-0012
+})
 
-export type CreateBookingRequest = z.infer<typeof CreateBookingRequest>
+export type CreateOrderRequest = z.infer<typeof CreateOrderRequest>
 ```
 
 The server validates with the schema. The client imports the type. Change a field and the other
@@ -33,8 +32,9 @@ side fails to typecheck. That is what a frozen contract means in practice.
 4. **Comment the intent, not the type.** The type states the shape. A comment states why the
    field exists, and points to the SSOT rule or ADR that explains it. Those pointers are how an
    agent editing this file finds the reasoning without being told to look.
-5. **Brand the primitives that get confused.** Money, local dates, and IDs. A `Vnd` that cannot
-   be passed where a `Usd` is expected prevents a class of bug that tests do not catch.
+5. **Brand the primitives that get confused.** Money, local dates, and IDs. A `Cents` value that
+   cannot be passed where a `Dollars` value is expected prevents a class of bug that tests do
+   not catch.
 
 ## Generated outputs
 

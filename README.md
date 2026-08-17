@@ -7,10 +7,17 @@ that keep a growing codebase honest when many agents and several people work on 
 
 ## The problem it solves
 
-An AI can write a feature in an hour. It cannot know why you chose room-type inventory over
-per-unit inventory, or that Airbnb stays authoritative until December. That knowledge lives
-nowhere in the code. Without a place to put it, every agent rediscovers the domain, guesses,
-and guesses differently each time.
+An AI writes a feature in an hour. It cannot know the things you decided and never wrote down.
+
+Take any system that sells a limited number of things — seats, licences, appointment slots.
+Somebody decided a checkout hold lasts 10 minutes, because that is how long the payment provider
+keeps a session open. Somebody decided partner sales are entered by hand, because the partner
+has no webhook.
+
+Neither fact is in the code. An agent reading the code sees *that* holds expire after 10
+minutes, so it will change the number when a ticket asks. It sees no partner sync, so it assumes
+one is missing and builds it. Multiply that by forty features and four agents, and nobody can
+say what is true on purpose and what is true by accident.
 
 Three things follow from that.
 
@@ -30,13 +37,21 @@ you write code. Skipping it is how projects get tenancy, money, and dates wrong.
 
 ## Read in this order
 
+**Start with [`docs/process/ONEPAGER.md`](docs/process/ONEPAGER.md).** Read only that file and
+you can work here. Everything below is reference you look up when you need it.
+
 | Order | File | Why |
 |---|---|---|
-| 1 | `docs/process/PROCESS.md` | The method, worked through a real example |
-| 2 | `docs/process/DOCUMENT_TYPES.md` | What goes where, who writes it, when it dies |
-| 3 | `docs/process/NEW_PROJECT.md` | Day-one decisions, before any code |
-| 4 | `AGENTS.md` | What every agent reads each session |
-| 5 | `docs/engineering-standards/` | Code, tests, branches, PRs, releases |
+| 1 | `docs/process/ONEPAGER.md` | **Everything, in one read.** The idea, the map, the steps. |
+| 2 | `docs/process/PROCESS.md` | The long version, worked through one example end to end |
+| 3 | `docs/process/DOCUMENT_TYPES.md` | Lookup table: what goes where, who writes it, when it dies |
+| 4 | `docs/process/NEW_PROJECT.md` | Day-one decisions, before any code |
+| 5 | `AGENTS.md` | What every agent reads each session |
+| 6 | `docs/engineering-standards/` | Code, tests, branches, PRs, releases |
+
+Every example in these documents uses one system that needs no explaining: **an app that sells
+tickets to events.** An event has fixed capacity, a buyer holds seats while paying, staff can
+cancel an order. That is the whole domain. Substitute your own.
 
 ## Layout
 

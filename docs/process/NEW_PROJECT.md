@@ -88,7 +88,8 @@ Answer each. Write one ADR per answer. Numbers 1 to 6 are the ones that hurt.
 List the domain areas. Each gets one SSOT file when its first feature is designed. Do not create
 the files yet.
 
-A booking product, for example: `AVAILABILITY`, `BOOKING`, `PRICING`, `IDENTITY`, `INVENTORY`.
+A system that sells a limited number of things, for example: `CAPACITY`, `ORDERING`, `PRICING`,
+`IDENTITY`, `PAYMENT`.
 
 Four to eight areas is normal. If you have twenty, you are naming features, not domains.
 
@@ -96,8 +97,8 @@ Four to eight areas is normal. If you have twenty, you are naming features, not 
 
 ## 4. First feature: run the full loop
 
-Pick the thinnest slice that touches every layer. For a booking product: a guest books two
-nights, the manager sees it, the manager cancels, availability returns.
+Pick the thinnest slice that touches every layer. For a system that sells a limited number of
+things: a buyer orders two, staff see the order, staff cancel it, the count returns.
 
 Run every stage in `PROCESS.md` on that one slice, even though it feels heavy. It proves the
 process, the toolchain, and the CI gates at the same time, on work small enough to throw away

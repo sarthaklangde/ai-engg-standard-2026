@@ -10,8 +10,8 @@ State what the system does. Write it in the present tense. Two or three sentence
 ## Why
 
 State the forces that made this the right answer. Name the concrete cost of the alternative.
-Prefer a real operational fact over a principle. "Managers reshuffle guests daily" is useful.
-"This is more flexible" is not.
+Prefer a real operational fact over a principle. "Support staff must answer 'why does it say
+sold out?' while the buyer is still paying" is useful. "This is more flexible" is not.
 
 ## Rejected
 
