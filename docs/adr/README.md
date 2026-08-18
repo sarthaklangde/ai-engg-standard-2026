@@ -37,6 +37,5 @@ One line per ADR. Newest at the bottom. Grep this before proposing anything.
 
 | ID | Title | Status |
 |---|---|---|
-| — | none yet | — |
+| 0001 | Error routing follows throw versus return | accepted |
 
-<!-- 0001 | Example title | accepted -->
