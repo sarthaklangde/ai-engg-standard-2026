@@ -9,6 +9,19 @@ import { join, relative } from 'node:path'
 
 export const ROOT = process.cwd()
 
+/** Extensions scanned for `@invariant` markers. Add a language, add it here. */
+export const INVARIANT_TEST_EXTS = [
+  '.ts', '.tsx', '.js', '.jsx', '.mjs',
+  '.py', '.go', '.rb', '.rs', '.java', '.kt', '.sql',
+]
+
+/** Top-level directories this standard sanctions. Anything else needs an ADR. */
+export const SANCTIONED_ROOTS = new Set([
+  'apps', 'packages',            // build graph: entry points and exports
+  'database', 'infra', 'tooling', // operational: applied by CI, imported by nothing
+  'docs', 'specs', 'tests',      // process
+])
+
 const GREY = '\x1b[90m'
 const RED = '\x1b[31m'
 const GREEN = '\x1b[32m'
@@ -106,9 +119,15 @@ export function readAdrs() {
   return ids
 }
 
-/** Every `// @invariant XX-1` marker under tests/invariants. */
+/**
+ * Every `@invariant XX-1` marker under tests/invariants.
+ *
+ * Language-agnostic on purpose: the marker is a comment, and a Python backend
+ * writes `# @invariant CAP-1` in pytest exactly as TypeScript writes `//`.
+ * A check that only sees one language silently reports every rule as untested.
+ */
 export function readInvariantMarkers() {
-  const files = walk(join(ROOT, 'tests', 'invariants'), ['.ts', '.tsx', '.js', '.mjs'])
+  const files = walk(join(ROOT, 'tests', 'invariants'), INVARIANT_TEST_EXTS)
   const found = new Map() // id -> [files]
   for (const file of files) {
     const text = readFileSync(file, 'utf8')

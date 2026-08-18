@@ -19,3 +19,17 @@ probe/
 # Generated from packages/contracts. Never commit, never hand-edit.
 **/models_generated.py
 **/openapi.generated.json
+
+# Atlas ephemeral state. The migrations directory and atlas.sum ARE committed.
+.atlas/
+atlas.hcl.local
+
+# Terraform / OpenTofu. State holds secrets and lives in a remote backend.
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+!*.tfvars.example
+
+# Generated design token output is committed. Build caches are not.
+packages/*/.cache/

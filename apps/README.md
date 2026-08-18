@@ -13,7 +13,8 @@ belongs here. If it is imported by something else, it belongs in `packages/`.
   `AGENTS.md` still applies. Nested files add; they do not replace.
 - Internal structure is the app's own business. `src/modules/<feature>/` is a reasonable default
   for a server. Keep it inside the app.
-- Do not add a top-level source directory outside `apps/` and `packages/`.
+- Do not add a top-level directory outside the sanctioned roots. `tooling/checks/root-layout.mjs`
+  enforces this; adding one needs an ADR.
 
 ## Non-TypeScript apps
 

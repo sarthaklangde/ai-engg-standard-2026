@@ -48,3 +48,33 @@ run = "pnpm -r --if-present test:e2e"
 [tasks.contracts]
 description = "Regenerate everything derived from packages/contracts."
 run = "pnpm --filter '@repo/contracts' --if-present generate"
+
+# --- database -------------------------------------------------------------
+# Agents call these, never the underlying tool directly. Wrapping them means the
+# destructive modes are unreachable: there is no task that applies to production.
+
+[tasks."db:diff"]
+description = "Generate a migration from the declared schema. Pass a name."
+run = "atlas migrate diff {{arg(name='name')}} --env local"
+
+[tasks."db:lint"]
+description = "Lint the newest migration for destructive or locking changes."
+run = "atlas migrate lint --env local --latest 1"
+
+[tasks."db:validate"]
+description = "Verify no merged migration was edited or reordered."
+run = "atlas migrate validate --env local"
+
+[tasks."db:types"]
+description = "Regenerate types from the schema. Commit the output."
+run = "echo 'TODO: wire the generator for this project'"
+
+[tasks."db:check"]
+description = "Every database gate. Runs in CI."
+depends = ["db:validate", "db:lint"]
+
+# --- design ---------------------------------------------------------------
+
+[tasks.tokens]
+description = "Regenerate CSS, presets, and typed constants from the token source."
+run = "pnpm --filter '@repo/tokens' --if-present generate"

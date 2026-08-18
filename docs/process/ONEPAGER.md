@@ -51,8 +51,12 @@ rediscover and self-correcting. Intent is impossible to rediscover and catastrop
 
 ```
 apps/                  deployable things — a web app, an API, a worker, a CLI
-packages/              shared libraries
-  contracts/           Zod schemas. The one hand-written source for every boundary shape.
+packages/              imported things
+  contracts/           boundary shapes
+  tokens/              design tokens. Pure data, generates CSS + presets + types.
+  ui/                  shared primitives — only once a second app needs them
+database/              schema/ hand-written · migrations/ generated, then frozen
+infra/                 applied to a cloud by CI
 docs/
   ssot/                the domain rules, numbered, permanent, kept short
   adr/                 decisions + what you rejected, append-only, never edited
@@ -67,8 +71,22 @@ AGENTS.md              what every agent reads, every session
 CODEMAP.md             generated. Never hand-edit.
 ```
 
-There is **no top-level source directory outside `apps/` and `packages/`.** An app's internal
-structure is its own business.
+### Why those roots and not others
+
+Roots key off a mechanical property, not taste:
+
+| Root | Property |
+|---|---|
+| `apps/` | has an **entry point** — something runs it |
+| `packages/` | has **exports** — something imports it |
+| `database/`, `infra/`, `tooling/` | **neither** — CI applies them to something external |
+
+`packages/` is not "shared code", it is **imported code**. That distinction is what the tooling
+reads: the package manager globs `apps/*` and `packages/*`, and affected-detection walks the
+import graph. Nothing imports a migration, so `database/` is a root.
+
+**No other top-level directory without an ADR** — `root-layout` enforces it. And a package needs
+**two consumers or a hard boundary reason**; one consumer means it lives inside that app.
 
 ### Every folder has a death rule
 
@@ -84,6 +102,9 @@ maintained accumulates forever.
 | `probe-*.mjs` | agent | **deleted the same day, never committed** |
 | `tests/invariants/` | agent, from the SSOT | never — append-only |
 | `packages/contracts/` | agent | evolves; changes serialize |
+| `database/schema/` | agent | evolves; changes serialize |
+| `database/migrations/` | **a diffing tool** | **permanent — generated, never edited** |
+| `infra/` | agent plans, **CI applies** | permanent |
 | unit tests | agent | disposable, rewrite freely |
 | `CODEMAP.md`, OpenAPI | **a script** | regenerated |
 
@@ -411,7 +432,12 @@ CI, and they fail the build.
 | `ssot-invariant-sync` | An SSOT rule with no test. A test citing a rule that does not exist. Two SSOTs claiming one prefix. |
 | `ticket-frontmatter` | A ticket naming no invariants, or naming IDs that do not resolve. A breaking contract change with no ADR. |
 | `codemap-drift` | A hand-edited or stale `CODEMAP.md`. |
+| `adr-index-sync` | An ADR missing from the index — one nobody will ever find. |
+| `root-layout` | A stray `src/`, `lib/`, or `utils/` at the root. |
 | `invariant-guard` | A PR touching invariant tests *and* application code together, without the `invariant-change` label. |
+
+Plus, once a database exists: migration checksum validation and destructive-change linting,
+both provided by the migration tool rather than written here.
 
 One command, everywhere. Humans, agents, git hooks, and CI all run the same thing:
 
@@ -472,7 +498,9 @@ WRITING
   a rule that must always hold ......... docs/ssot/  + a test citing its ID
   why we chose this .................... docs/adr/   (with Rejected — required)
   what the code does ................... nowhere. Generate it.
-  a shape crossing a boundary .......... packages/contracts/  (Zod, once)
+  a shape crossing a boundary .......... packages/contracts/
+  a table or column .................... database/schema/  — never a migration
+  a color or spacing value ............. packages/tokens/  — never a literal
   scaffolding for this feature ......... specs/<feature>/  (dies at merge)
 
 SKILLS
@@ -483,7 +511,9 @@ SKILLS
   /harvest ...... at merge: drain into SSOT + ADRs, freeze the spec
 
 NEVER
-  hand-edit CODEMAP.md or generated OpenAPI
+  hand-edit CODEMAP.md, generated OpenAPI, or anything under a dist/ or migrations/ dir
+  hand-write a migration — edit database/schema/ and generate
+  run an infra or schema apply — agents plan, CI applies
   define the same schema twice
   weaken or delete an invariant without a human + an ADR
   edit tests/invariants/ in the same PR as application code

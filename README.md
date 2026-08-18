@@ -56,8 +56,10 @@ cancel an order. That is the whole domain. Substitute your own.
 ## Layout
 
 ```
-apps/          deployable things
-packages/      shared libraries; packages/contracts holds the Zod schemas
+apps/          deployable things — has an entry point
+packages/      imported things — has exports (contracts, tokens, ui)
+database/      schema/ hand-written · migrations/ generated, then frozen
+infra/         applied to a cloud by CI
 docs/ssot/     the domain rules, numbered, permanent
 docs/adr/      decisions and the options you rejected, append-only
 docs/process/  how to work here (human-facing)
@@ -67,19 +69,26 @@ tooling/checks/    the scripts that make the standard binding
 .claude/skills/    spec, probe, ticketize, harvest, discover
 ```
 
+Roots key off a mechanical property: `apps/` has an entry point, `packages/` has exports, and
+the rest are applied to something external by CI and imported by nothing. `packages/` is not
+"shared code" — it is **imported code**, which is what the tooling actually reads.
+
 Every folder holds a `README.md` that states its death rule: who writes the files, and when
 they stop being maintained. Read it before you add a file there.
 
 ## What is actually enforced
 
-Most of this standard is advice. These four checks are not. They run in `mise run check` and
-in CI, and they fail the build.
+Most of this standard is advice. These checks are not. They run in `mise run check` and in CI,
+and they fail the build.
 
 | Check | What it prevents |
 |---|---|
 | `ssot-invariant-sync` | An SSOT rule with no test, or a test citing a rule that does not exist |
 | `ticket-frontmatter` | A ticket that names no invariants, or names ones that do not exist |
 | `codemap-drift` | A hand-edited or stale `CODEMAP.md` |
+| `adr-index-sync` | An ADR missing from the index — one nobody will ever find |
+| `root-layout` | A stray `src/`, `lib/`, or `utils/` appearing at the root |
+| `invariant-guard` | An implementer editing the tests that judge their own work |
 | `ssot-with-behavior` | A PR that changes behavior in a domain and leaves its SSOT stale |
 
 Everything else is a guideline. `docs/engineering-standards/ENGINEERING_STANDARDS.md` marks
@@ -89,5 +98,10 @@ deployability, contracts, or agent consistency.
 ## Toolchain
 
 `mise` pins the runtimes and owns the task list. `lefthook` runs the git hooks, because it is a
-single binary and does not need Node for a Python package. `pnpm` for TypeScript workspaces.
-Zod is the one source of truth for every schema.
+single binary and does not need Node for a Python package. `pnpm` for TypeScript workspaces,
+`uv` for Python.
+
+Schema changes are **generated, never authored**: you declare the schema you want and a diffing
+tool computes the migration. That is the general principle applied to the highest-stakes
+artifact — *prefer tools where the dangerous output is derived rather than written*. It also
+turns review from forty lines of `ALTER` into a three-line schema diff.

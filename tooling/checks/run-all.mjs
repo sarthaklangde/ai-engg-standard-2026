@@ -15,6 +15,8 @@ const CHECKS = [
   ['ssot-invariant-sync.mjs', []],
   ['ticket-frontmatter.mjs', []],
   ['codemap-gen.mjs', ['--check']],
+  ['adr-index-sync.mjs', []],
+  ['root-layout.mjs', []],
 ]
 
 let failed = 0

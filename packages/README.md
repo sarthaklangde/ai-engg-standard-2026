@@ -16,8 +16,17 @@ those descriptions, so write them as if someone will read them. Someone will.
 
 | Package | Holds |
 |---|---|
-| `contracts` | Zod schemas. The one source of truth for every boundary shape. |
+| `contracts` | Boundary shapes. Hand-written when one language owns them; generated when the API is the boundary. |
+| `tokens` | Design tokens. Pure data, generates CSS, presets, and typed constants. |
+| `ui` | Shared primitives only. Not app-specific patterns. |
 | `config-*` | Shared tool configuration: lint, tsconfig, test setup |
-| `<domain>-core` | Pure domain logic with no I/O, when it is shared by two apps |
+| `<domain>-core` | Pure domain logic with no I/O, when two apps share it |
 
-Do not add a top-level source directory outside `apps/` and `packages/`.
+**A package needs two consumers, or a hard boundary reason** — published externally, a
+different runtime, security isolation. One consumer means it belongs inside that app.
+
+Never create `packages/utils` or `packages/common`. Those names mean "I did not know where this
+goes", and they grow without limit because nothing is ever *not* a util. If you cannot name a
+package after what it contains, it does not want to be a package yet.
+
+Do not add a top-level directory outside the sanctioned roots without an ADR.
