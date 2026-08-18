@@ -36,6 +36,61 @@ side fails to typecheck. That is what a frozen contract means in practice.
    cannot be passed where a `Dollars` value is expected prevents a class of bug that tests do
    not catch.
 
+## The error envelope is part of the contract
+
+Success shapes get all the attention and failure shapes get invented per endpoint. Define the
+error envelope once, here, and have every handler return it.
+
+```ts
+export const ErrorCode = z.enum([
+  'MALFORMED_BODY', 'UNAUTHENTICATED', 'FORBIDDEN', 'NOT_FOUND',
+  'VALIDATION_FAILED', 'RATE_LIMITED', 'INTERNAL_ERROR',
+  // append only — never remove or repurpose a code
+])
+
+export const ProblemDetails = z.object({
+  type: z.string(),          // stable URI
+  title: z.string(),
+  status: z.number().int(),
+  detail: z.string(),        // for humans. Never parsed by a client.
+  instance: z.string().optional(),
+  code: ErrorCode,           // THE contract. Clients switch on this.
+  requestId: z.string(),     // join key to logs and traces
+  errors: z.array(z.object({
+    field: z.string(),
+    code: z.string(),
+    detail: z.string(),
+  })).optional(),
+})
+```
+
+`ErrorCode` is append-only, for the same reason an invariant is: removing one breaks every
+client that branches on it. Rules in `docs/ssot/API_ERRORS.md`.
+
+## Versioning
+
+In a repository where the API and its clients ship together, **the type system is the
+versioning**. Remove a field and the client fails to typecheck; CI catches it before anything
+deploys.
+
+That stops being true the moment you have a consumer you cannot redeploy — a mobile app, a
+partner integration, a public API. Until then, a `/v1` prefix costs nothing and buys an escape
+hatch, and you evolve additively inside it:
+
+| Change | Breaking | How |
+|---|---|---|
+| Add a response field | no | ship it; clients ignore unknown fields |
+| Add an optional request field | no | ship it |
+| Add an enum value | **yes, for consumers that switch exhaustively** | treat as breaking |
+| Rename or remove a field | yes | expand-contract: add the new one, migrate consumers, then remove |
+| Change a type or a status code | yes | new field, or a new version |
+
+Expand-contract is the same manoeuvre as a database migration, and for the same reason: you
+cannot atomically change a producer and every consumer.
+
+A real `/v2` is rare. When it happens it is usually a new API surface rather than an incremented
+endpoint, which is why you see the prefix everywhere and the second version almost nowhere.
+
 ## Generated outputs
 
 Never hand-write any of these. `mise run check` regenerates them and fails if the committed
